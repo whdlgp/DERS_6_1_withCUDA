@@ -141,7 +141,7 @@ void CEstimation::free_memory()
             }
         }
 #else
-        for(int i=0; i<m_iNumOfLabels; i++)  // ¿Ö ÇÑ²¨¹ø¿¡ ÇÒ´çÀ» ¾È¹ÞÁÒ? 
+        for(int i=0; i<m_iNumOfLabels; i++)  // ï¿½ï¿½ ï¿½Ñ²ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò´ï¿½ï¿½ï¿½ ï¿½È¹ï¿½ï¿½ï¿½? 
         {
             if(errors[i]!=NULL) 
             {
@@ -264,8 +264,8 @@ bool CEstimation::xInit(CParameterDepthEstimation cParameter)
         matIn[i] = cvCreateMat(3, 3, CV_64F); //intrinsic parameter of left/right/virtual camera 3x3 matrix
         matEx_c2w[i] = cvCreateMat(3, 4, CV_64F); //extrinsic parameter of left/right/virtual camera 3x4 matrix
     }
-	// ¿Ö ¼ø¼­°¡ Left-Right-Centor? ±×¸®°í ¸íÄªÀÌ ¿Ö Virtual?
-	// getDEmode == 3ÀÌ¸é depth Ä«¸Þ¶ó?
+	// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Left-Right-Centor? ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½Äªï¿½ï¿½ ï¿½ï¿½ Virtual?
+	// getDEmode == 3ï¿½Ì¸ï¿½ depth Ä«ï¿½Þ¶ï¿½?
     if( !readCameraParam(fp, cParameter.getLeftCameraName().c_str(), matIn[0], matEx_c2w[0]) ||
         !readCameraParam(fp, cParameter.getRightCameraName().c_str(), matIn[1], matEx_c2w[1]) ||
         !readCameraParam(fp, cParameter.getCenterCameraName().c_str(), matIn[2], matEx_c2w[2]) ||
@@ -356,7 +356,7 @@ bool CEstimation::xInit(CParameterDepthEstimation cParameter)
         }
     }
 #else
-    for(i=0, pos=m_iPicsize; i<m_iNumOfLabels; i++, pos+=m_iPicsize) //¿Ö ÇÑ²¨¹ø¿¡ ÇÒ´çÀ» ¾ÈÇÒ±î¿ä?
+    for(i=0, pos=m_iPicsize; i<m_iNumOfLabels; i++, pos+=m_iPicsize) //ï¿½ï¿½ ï¿½Ñ²ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ò±ï¿½ï¿½?
     {
         if( (errors[i]      = (CostType *)malloc(m_iPicsize*sizeof(CostType))) == NULL)
         {
@@ -513,7 +513,7 @@ bool CEstimation::setup_from_search_range(int iMinSearchRange, int iMaxSearchRan
     iMaxDisparityRange *= m_dSearchLevel;
 #endif
 
-	// 255 º¸´Ù Å« MaxDisparity ÀÎ °æ¿ì ÀÌ·¸°Ô Ç¥½Ã ÇÏ´Â °ÍÀ¸·Î º¸ÀÓ.
+	// 255 ï¿½ï¿½ï¿½ï¿½ Å« MaxDisparity ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ì·ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
     if(iMaxDisparityRange < iMinDisparityRange)
     {
         printf("*** AUTOMATICAL PARAMETER MODIFICATION ***\n");
@@ -526,7 +526,7 @@ bool CEstimation::setup_from_search_range(int iMinSearchRange, int iMaxSearchRan
         iMaxDisparityRange = iMinDisparityRange + MAX_DEPTH-1;
     }
 
-	// ÃÖ¼Ò °Ë»ö ¹üÀ§ ¼¼ÆÃ ¿À·ù   
+	// ï¿½Ö¼ï¿½ ï¿½Ë»ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½   
     if(iMinSearchRange < iMinDisparityRange)
     {
         printf("*** AUTOMATICAL PARAMETER MODIFICATION ***\n");
@@ -538,7 +538,7 @@ bool CEstimation::setup_from_search_range(int iMinSearchRange, int iMaxSearchRan
         printf("  MinimumValueOfDisparitySearchRange must be larger than or equal to MinimumValueOfDisparityRange\n");
         iMinSearchRange = iMinDisparityRange;
     }
-	// ÃÖ´ë °Ë»ö ¹üÀ§ ¼¼ÆÃ ¿À·ù 
+	// ï¿½Ö´ï¿½ ï¿½Ë»ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
     if(iMaxSearchRange > iMaxDisparityRange)
     {
         printf("*** AUTOMATICAL PARAMETER MODIFICATION ***\n");
@@ -551,17 +551,17 @@ bool CEstimation::setup_from_search_range(int iMinSearchRange, int iMaxSearchRan
         iMaxSearchRange = iMaxDisparityRange;
     }
 
-	// ÃÖÁ¾ ¼­Ä¡ ¹üÀ§¿Í Ç¥½Ã ¹üÀ§ 
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
     print_range(m_dSearchLevel, iMinSearchRange, iMaxSearchRange, iMinDisparityRange, iMaxDisparityRange);
 
-    m_iNumOfLabels = iMaxSearchRange - iMinSearchRange + 1;  // °Ë»öÇÒ disparity ¼ö (subpixel °í·Á)
+    m_iNumOfLabels = iMaxSearchRange - iMinSearchRange + 1;  // ï¿½Ë»ï¿½ï¿½ï¿½ disparity ï¿½ï¿½ (subpixel ï¿½ï¿½ï¿½ï¿½)
     if((iMaxDisparityRange - iMinDisparityRange + 1)>MAX_DEPTH)
     {
         fprintf(stderr, "The number of depth candidates is too large.\n");
         return false;
     }
 
-	// ¼³Á¤º¯¼ö: BaselineBasis
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: BaselineBasis
     // set candidates of disparity
     baseline[0] = cvmGet(matEx_c2w[2], 0, 3)-cvmGet(matEx_c2w[0], 0, 3);  // Center.x - Left.x = left BL
     baseline[1] = cvmGet(matEx_c2w[1], 0, 3)-cvmGet(matEx_c2w[2], 0, 3);  // Right.x  - Center.x  = right baseline
@@ -595,7 +595,7 @@ bool CEstimation::setup_from_search_range(int iMinSearchRange, int iMaxSearchRan
     disparity_offset[0] = cvmGet(matIn[2], 0, 2) - cvmGet(matIn[0], 0, 2); // intrinsic, Center.offset - Left.offset
     disparity_offset[1] = cvmGet(matIn[1], 0, 2) - cvmGet(matIn[2], 0, 2); //  
 
-	// (m_dZnear, m_dZfar) °è»ê 
+	// (m_dZnear, m_dZfar) ï¿½ï¿½ï¿½ 
     caloc_z_range(cvmGet(matIn[2], 0, 0), baseline[uiBaselineBasis], disparity_offset[uiBaselineBasis], matEx_c2w[2], iMinDisparityRange, iMaxDisparityRange, uiDepthType);
 
     if(!init_label2depth(cvmGet(matIn[2], 0, 0), baseline[uiBaselineBasis], disparity_offset[uiBaselineBasis], matEx_c2w[2], iMinDisparityRange, iMaxDisparityRange, iMinSearchRange, iMaxSearchRange, uiDepthType))
@@ -725,7 +725,7 @@ bool CEstimation::setup_from_z_search_range(int iNumberOfDepthSteps, double dNea
         return false;
     }
 
-    //To sko?zy³em
+    //To sko?zyï¿½em
     //caloc_z_range(cvmGet(matIn[2], 0, 0), baseline[uiBaselineBasis], disparity_offset[uiBaselineBasis], matEx_c2w[2], iMinDisparityRange, iMaxDisparityRange, uiDepthType);
 
     //if(!init_label2depth(cvmGet(matIn[2], 0, 0), baseline[uiBaselineBasis], disparity_offset[uiBaselineBasis], matEx_c2w[2], iMinDisparityRange, iMaxDisparityRange, iMinSearchRange, iMaxSearchRange, uiDepthType))
@@ -821,7 +821,7 @@ bool CEstimation::setup_from_z_search_range(int iNumberOfDepthSteps, double dNea
 #endif
 
 //
-// disparity Range ¿Í baseline Ä«¸Þ¶ó focal length·Î ºÎÅÍ Znear/far °è»ê 
+// disparity Range ï¿½ï¿½ baseline Ä«ï¿½Þ¶ï¿½ focal lengthï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Znear/far ï¿½ï¿½ï¿½ 
 // Z = f * baseline / disparity 
 // (baseline*f)/Z => disparity  
 void CEstimation::caloc_z_range(double focal_length, double baseline, double disparity_offset, CvMat* matEx_c2w, int iMinDisparity, int iMaxDisparity, unsigned int uiDepthType)
@@ -837,7 +837,7 @@ void CEstimation::caloc_z_range(double focal_length, double baseline, double dis
     m_dZfar  = focal_length * baseline /
                                 ( double(iMinDisparity)/double(m_dSearchLevel) + disparity_offset );
 
-    // m_dZfar/baseline =  focal_length/minDisparity   // ´ëºÎºÐ 0 
+    // m_dZfar/baseline =  focal_length/minDisparity   // ï¿½ï¿½Îºï¿½ 0 
 	// m_dZnear/baseline =  focal_length/maxDisparity  
 	// 1 m
 	//
@@ -845,8 +845,8 @@ void CEstimation::caloc_z_range(double focal_length, double baseline, double dis
 	//  |   1m 
 	//  | 
 	//  L-cam      R-cam
-	//   »çÁø        »çÁø 
-	//     ÁÖÁ¡ dispairty  
+	//   ï¿½ï¿½ï¿½ï¿½        ï¿½ï¿½ï¿½ï¿½ 
+	//     ï¿½ï¿½ï¿½ï¿½ dispairty  
 	//  1 m /0.3m =   focal_length   / 200
 	//  200/0.3 = f = 600 ....??
 
@@ -854,7 +854,7 @@ void CEstimation::caloc_z_range(double focal_length, double baseline, double dis
 
     if(uiDepthType)
     {
-        m_dZnear = cvmGet(matEx_c2w, 2, 2) * m_dZnear + cvmGet(matEx_c2w, 2, 3);  // º¸Åë 0 ¾Æ´Ñ°¡¿ä?
+        m_dZnear = cvmGet(matEx_c2w, 2, 2) * m_dZnear + cvmGet(matEx_c2w, 2, 3);  // ï¿½ï¿½ï¿½ï¿½ 0 ï¿½Æ´Ñ°ï¿½ï¿½ï¿½?
         m_dZfar  = cvmGet(matEx_c2w, 2, 2) * m_dZfar  + cvmGet(matEx_c2w, 2, 3);
     }
 }
@@ -988,8 +988,8 @@ bool CEstimation::init_label2disparity_simple(double ratio[2], int iMinSearch, i
     return true;
 }
 
-// Lookup ÅÂÀÌºí »ý¼º 
-// m_aiLabel2Disparity[left/right][¸ÅÄª¿¡ÀÇÇÑ disparity] = ½ÇÁ¦ disparity
+// Lookup ï¿½ï¿½ï¿½Ìºï¿½ ï¿½ï¿½ï¿½ï¿½ 
+// m_aiLabel2Disparity[left/right][ï¿½ï¿½Äªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ disparity] = ï¿½ï¿½ï¿½ï¿½ disparity
 //
 bool CEstimation::init_label2disparity_from_z(double focal_length, double baseline[2], double disparity_offset[2], CvMat* matEx_c2w, unsigned int uiDepthType)
 {
@@ -1307,11 +1307,11 @@ bool CEstimation::init_homography(CvMat *matIn[3], CvMat *matEx_c2w[3], unsigned
 
 
 //
-// Wrapping/Agent ÇÔ¼ö. ½ÇÁ¦ ÇÔ¼ö´Â function pointer·Î ¿¬°áµÊ.
+// Wrapping/Agent ï¿½Ô¼ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ function pointerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.
 //
 void CEstimation::block_matching(CIYuv<ImageType> *yuvLeft, CIYuv<ImageType> *yuvRight, CIYuv<ImageType> *yuvCenter, BYTE ***srcSEGM, CIYuv<ImageType> *yuvCenter_prev, bool temporalonoff, double threshold)
 {
-	// ¿Ö memsetÀ» ¾È¾²°í?
+	// ï¿½ï¿½ memsetï¿½ï¿½ ï¿½È¾ï¿½ï¿½ï¿½?
     for (int i=0; i<m_iNumOfLabels; i++)
         for (int j=0; j<m_iHeight*m_iWidth; j++){
 #ifdef POZNAN_TWO_COSTS
@@ -3418,7 +3418,7 @@ void CEstimation::block_matching_homography_window(CIYuv<ImageType> *yuvLeft, CI
 }
 
 //
-// Pixel ÇÏ³ª¸¦ ºñ±³ ÇÔ. BM ÇÔ¼ö Áß¿¡ °¡Àå ½¬¿î ÇÔ¼öÀÌ¹Ç·Î, ¿©±â¼­ºÎÅÍ ºÐ¼® ÇÏ´Â°ÍÀÌ ¹Ù¶÷Á÷  
+// Pixel ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½. BM ï¿½Ô¼ï¿½ ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½Ì¹Ç·ï¿½, ï¿½ï¿½ï¿½â¼­ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¼ï¿½ ï¿½Ï´Â°ï¿½ï¿½ï¿½ ï¿½Ù¶ï¿½ï¿½ï¿½  
 // IN: left, center, right
 // Out: errors
 //
@@ -3432,23 +3432,23 @@ void CEstimation::block_matching_disparity_pixel(CIYuv<ImageType> *yuvLeft, CIYu
 
     for(j=pp=0; j<m_iHeight; j++)
     {
-        for(i=0; i<m_iWidth; i++, pp++) // error[depth][position of pixel], GCÀ» À§ÇÏ¿© ÀÌ·¸°Ô ±¸¼º.  
+        for(i=0; i<m_iWidth; i++, pp++) // error[depth][position of pixel], GCï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.  
         {
-            for(d=0; d<m_iNumOfLabels; d++)  // disparity search ¹üÀ§³×¿¡¼­ ÀÏ´Ü ¸ðµÎ °è»ê  
+            for(d=0; d<m_iNumOfLabels; d++)  // disparity search ï¿½ï¿½ï¿½ï¿½ï¿½×¿ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½  
             {
 #ifdef POZNAN_TWOVIEW_SUPPORT
                 if(yuvLeft)
                 {
 #endif
 #ifdef SUB_PEL_PRECISION
-                target_pixel_u = i*m_iPrecision + m_aiLabel2Disparity[0][d]; // Á¤¹Ðµµ¿Í index to disparity maaping table 
+                target_pixel_u = i*m_iPrecision + m_aiLabel2Disparity[0][d]; // ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ index to disparity maaping table 
 #else
                 target_pixel_u = i + m_aiLabel2Disparity[0][d];
 #endif
                 if(target_pixel_u>=0 && target_pixel_u<m_iMaxWidth)
-                    error_l = byte_abs[yuvLeft->Y[j][target_pixel_u] - yuvCenter->Y[j][i]];  // ABS-DIFF °è»ê (ÅÂÀÌºí»ç¿ë)
+                    error_l = byte_abs[yuvLeft->Y[j][target_pixel_u] - yuvCenter->Y[j][i]];  // ABS-DIFF ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½Ìºï¿½ï¿½ï¿½ï¿½)
                 else
-                    error_l = 255;  // MAX °ª (Áï ¼±ÅÃÀ» ¾ÈÇÏ·Á°íÇÔ)
+                    error_l = 255;  // MAX ï¿½ï¿½ (ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½ï¿½)
 #ifdef POZNAN_TWOVIEW_SUPPORT
                 }
                 else error_l = 255;
@@ -3491,9 +3491,9 @@ void CEstimation::block_matching_disparity_pixel(CIYuv<ImageType> *yuvLeft, CIYu
 
 
 //
-// Block Matching ¾Ë°í¸®Áò ±¸Çö (conventional °ú disparity basedÀÇ ¸ðµÎ »ç¿ë)
-// LEFT-CENTER-RIGHT YUV 420 ÀÔ·Â 
-// Segmentation Á¤º¸´Â »ç¿ëÇÏÁö ¾ÊÀ½ ...
+// Block Matching ï¿½Ë°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (conventional ï¿½ï¿½ disparity basedï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½)
+// LEFT-CENTER-RIGHT YUV 420 ï¿½Ô·ï¿½ 
+// Segmentation ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ...
 
 void CEstimation::block_matching_disparity_window(CIYuv<ImageType> *yuvLeft, CIYuv<ImageType> *yuvRight, CIYuv<ImageType> *yuvCenter, BYTE ***srcSEGM)
 {
@@ -3512,7 +3512,7 @@ void CEstimation::block_matching_disparity_window(CIYuv<ImageType> *yuvLeft, CIY
     j = 0, cj = 0, j1= j + 1;
         // i=0
         i = 0, ci = 0, i1 = 1;
-            for(d=0; d<m_iNumOfLabels; d++) // ¿Ø Labels?
+            for(d=0; d<m_iNumOfLabels; d++) // ï¿½ï¿½ Labels?
             {
 #ifdef POZNAN_TWOVIEW_SUPPORT
                 if(yuvLeft)
@@ -3525,7 +3525,7 @@ void CEstimation::block_matching_disparity_window(CIYuv<ImageType> *yuvLeft, CIY
                 target_pixel_u = i + m_aiLabel2Disparity[0][d];
                 u1 = target_pixel_u + 1;
 #endif
-                if(target_pixel_u>=0 && u1<m_iMaxWidth)  // ¿ÞÂÊ°ú ºñ±³ 
+                if(target_pixel_u>=0 && u1<m_iMaxWidth)  // ï¿½ï¿½ï¿½Ê°ï¿½ ï¿½ï¿½ 
                 {
                     cu = target_pixel_u >>1;
                     error_l = 0.2 * byte_abs[yuvLeft->Y[j][target_pixel_u] - yuvCenter->Y[j][i]]
@@ -3552,7 +3552,7 @@ void CEstimation::block_matching_disparity_window(CIYuv<ImageType> *yuvLeft, CIY
                 target_pixel_u = i - m_aiLabel2Disparity[1][d];
                 u1 = target_pixel_u + 1;
 #endif
-                if(target_pixel_u>=0 && u1<m_iMaxWidth)  // ¿À¸¥ÂÊ°ú ºñ±³ 
+                if(target_pixel_u>=0 && u1<m_iMaxWidth)  // ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½ ï¿½ï¿½ 
                 {
                     cu = target_pixel_u >>1;
                     error_r = 0.2 * byte_abs[yuvRight->Y[j][target_pixel_u] - yuvCenter->Y[j][i]]
@@ -3724,7 +3724,7 @@ void CEstimation::block_matching_disparity_window(CIYuv<ImageType> *yuvLeft, CIY
     // j=0 end
 
 
-    // ¹Ù¿î´õ¸® ¹®Á¦ ¾ø´Â ¿µ¿ª?
+    // ï¿½Ù¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½?
     // 0<j<M_iHeight - 1
     for(j=1; j<(m_iHeight - 1); j++)
     {
@@ -4397,8 +4397,8 @@ void CEstimation::getMotionMap_block(IplImage* src1, IplImage* src2,IplImage* de
 
 
 //-----------------------------------------------------------------------------
-// Reference·Î ºÎÅÍ Depth estimation error ¸¦ °è»êÇÔ. 
-// ¿©·¯°¡±â ÇüÅÂ·Î Reference depth°¡ ÁÖ¾îÁü
+// Referenceï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Depth estimation error ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½. 
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â·ï¿½ Reference depthï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ï¿½
 //
 int CEstimation::update_error_cost(CParameterDepthEstimation *cParameter, CIYuv<DepthType> *yuvRefDepth, CIYuv<ImageType> *yuvCenter, bool isfirstframe, int GC_cycle, bool temporalonoff)
 {
@@ -5068,7 +5068,7 @@ double CEstimation::data_term_disparity(int label, int pp)
 	return ((occ_l<=label&&error_l[label][pp]<255)?error_l[label][pp]/2:1)+((occ_r<=label&&error_r[label][pp]<255)?error_r[label][pp]/2:1);
 	//*/
 
-	//Gladkoœæ  p q r |p+r-2q|+|p-r|
+	//Gladkoï¿½ï¿½  p q r |p+r-2q|+|p-r|
 
 	/*
 	return ((occ_l<=label&&error_l[label][pp]<255)?error_l[label][pp]:10);
@@ -5081,36 +5081,36 @@ double CEstimation::data_term_disparity(int label, int pp)
 	/* //Occ Gdy occ jest liczone jako cienie
 	if(ipl_manoccl->imageData[pp]<=m_aiLabel2Disparity[0][label]&&errors_left[label][pp]<255)
 	{
-		//Lewy nie zas³oniety
+		//Lewy nie zasï¿½oniety
 		if(ipl_manoccr->imageData[pp]<=m_aiLabel2Disparity[1][label]&&errors_right[label][pp]<255)
 		{
-			//Lewy i przey nie zas³oni?y
+			//Lewy i przey nie zasï¿½oni?y
 			return (errors_left[label][pp]+errors_right[label][pp]+1)>>1;
 		}
 		else
 		{
-			//Tylko Lewy niezas³oniety
+			//Tylko Lewy niezasï¿½oniety
 			return errors_left[label][pp];
 		}
 	}
 	else
 	{
-		//Lewy zas³oni?y
+		//Lewy zasï¿½oni?y
 		if(ipl_manoccr->imageData[pp]<=m_aiLabel2Disparity[1][label]&&errors_right[label][pp]<255)
 		{
-			//Prawy nie zas³oniety
+			//Prawy nie zasï¿½oniety
 			return errors_right[label][pp];
 		}
 		else
 		{
-			//Oba zas³oniete
+			//Oba zasï¿½oniete
 			return 10;
 		}
 
 	}
 	//*/
 
-	//* //Occ Gdy Occ jest zsyntezowan?map?g³ebi
+	//* //Occ Gdy Occ jest zsyntezowan?map?gï¿½ebi
 	int xl  = pp % m_iWidth + m_aiLabel2Disparity[0][label]/m_iPrecision;
 	int xr  = pp % m_iWidth - m_aiLabel2Disparity[1][label]/m_iPrecision;
 	int ppl = pp +  m_aiLabel2Disparity[0][label]/m_iPrecision;
@@ -5121,14 +5121,14 @@ double CEstimation::data_term_disparity(int label, int pp)
 	if(xl>=0&&xl<m_iWidth&&disparity_map_left[ppl]<=m_aiLabel2Disparity[0][label]&&errors_left[label][pp]<COST_MAX)
 #endif
 	{
-		//Lewy nie zas³oniety
+		//Lewy nie zasï¿½oniety
 #ifdef POZNAN_OCC_ALWAYS_DEPTH
 		if(xr>=0&&xr<m_iWidth&&disparity_map_right[ppr]<=m_acLabel2Depth[label]&&errors_right[label][pp]<COST_MAX-1)
 #else
 		if(xr>=0&&xr<m_iWidth&&disparity_map_right[ppr]<=m_aiLabel2Disparity[1][label]&&errors_right[label][pp]<COST_MAX)
 #endif
 		{
-			//Lewy i Prawy nie zas³oni?y
+			//Lewy i Prawy nie zasï¿½oni?y
 #ifdef POZNAN_DOUBLE_COST
 			return (errors_left[label][pp]+errors_right[label][pp])/2;
 #else
@@ -5137,25 +5137,25 @@ double CEstimation::data_term_disparity(int label, int pp)
 		}
 		else
 		{
-			//Tylko Lewy niezas³oniety
+			//Tylko Lewy niezasï¿½oniety
 			return errors_left[label][pp];
 		}
 	}
 	else
 	{
-		//Lewy zas³oni?y
+		//Lewy zasï¿½oni?y
 #ifdef POZNAN_OCC_ALWAYS_DEPTH
 		if(xr>=0&&xr<m_iWidth&&disparity_map_right[ppr]<=m_acLabel2Depth[label]&&errors_right[label][pp]<COST_MAX-1)
 #else
 		if(xr>=0&&xr<m_iWidth&&disparity_map_right[ppr]<=m_aiLabel2Disparity[1][label]&&errors_right[label][pp]<COST_MAX)
 #endif
 		{
-			//Prawy nie zas³oniety
+			//Prawy nie zasï¿½oniety
 			return errors_right[label][pp];
 		}
 		else
 		{
-			//Oba zas³oniete
+			//Oba zasï¿½oniete
 			return 10;
 		}
 
@@ -5164,7 +5164,7 @@ double CEstimation::data_term_disparity(int label, int pp)
 
 
 
-	/* //Occ Gdy Occ jest zsyntezowan?map?g³ebi i odejmowanie kosztu
+	/* //Occ Gdy Occ jest zsyntezowan?map?gï¿½ebi i odejmowanie kosztu
 	int x = pp % m_iWidth;
 	int xl  = pp % m_iWidth + m_aiLabel2Disparity[0][label]/m_iPrecision;
 	int xr  = pp % m_iWidth - m_aiLabel2Disparity[1][label]/m_iPrecision;
@@ -5172,13 +5172,13 @@ double CEstimation::data_term_disparity(int label, int pp)
 	int ppr = pp -  m_aiLabel2Disparity[1][label]/m_iPrecision;
 	if(0&&xl>=0&&xl<m_iWidth&&ipl_manoccl->imageData[ppl]<=m_aiLabel2Disparity[0][label]&&errors_left[label][pp]<255)
 	{
-		//Lewy nie zas³oniety
+		//Lewy nie zasï¿½oniety
 		if(xr>=0&&xr<m_iWidth&&ipl_manoccr->imageData[ppr]<=m_aiLabel2Disparity[1][label]&&errors_right[label][pp]<255)
 		{
 			int e = (errors_left[label][pp]+errors_right[label][pp]+1)>>1;
 			int mel = 0;
 			int mer = 0;
-			//Lewy i przey nie zas³oni?y
+			//Lewy i przey nie zasï¿½oni?y
 			for(int i=1;i<m_aiLabel2Disparity[0][label]/m_iPrecision;i++)
 			{
 				//Pobierz punkt w lewo
@@ -5192,7 +5192,7 @@ double CEstimation::data_term_disparity(int label, int pp)
 					pptt = pp + i + m_aiLabel2Disparity[0][labels[ppt]]/m_iPrecision;
 					if(ppl==pptt)
 					{
-						//jeœli wskazuj?na ten sam punkt 
+						//jeï¿½li wskazuj?na ten sam punkt 
 						//e += 10 - errors_left[labels[ppt]][ppt]/2;
 						mel = max(mel,errors_left[labels[ppt]][ppt]-10);
 
@@ -5210,7 +5210,7 @@ double CEstimation::data_term_disparity(int label, int pp)
 					pptt = pp - i - m_aiLabel2Disparity[1][labels[ppt]]/m_iPrecision;
 					if(ppr==pptt)
 					{
-						//jeœli wskazuj?na ten sam punkt 
+						//jeï¿½li wskazuj?na ten sam punkt 
 						//e += 10 - errors_right[labels[ppt]][ppt]/2;
 						mer = max(mer,errors_right[labels[ppt]][ppt]-10);
 
@@ -5224,7 +5224,7 @@ double CEstimation::data_term_disparity(int label, int pp)
 		{
 			int e = errors_left[label][pp];
 			int me = 0;
-			//Tylko Lewy niezas³oniety
+			//Tylko Lewy niezasï¿½oniety
 			for(int i=1;i<m_aiLabel2Disparity[0][label]/m_iPrecision;i++)
 			{
 				//Pobierz punkt w lewo
@@ -5238,7 +5238,7 @@ double CEstimation::data_term_disparity(int label, int pp)
 					pptt = pp + i + m_aiLabel2Disparity[0][labels[ppt]]/m_iPrecision;
 					if(ppl==pptt&&m_aiLabel2Disparity[0][label]>=m_aiLabel2Disparity[0][labels[ppt]])
 					{
-						//jeœli wskazuj?na ten sam punkt 
+						//jeï¿½li wskazuj?na ten sam punkt 
 						//e += 10 - errors_left[labels[ppt]][ppt];
 						me = max(me,errors_left[labels[ppt]][ppt]-10);
 
@@ -5250,12 +5250,12 @@ double CEstimation::data_term_disparity(int label, int pp)
 	}
 	else
 	{
-		//Lewy zas³oni?y
+		//Lewy zasï¿½oni?y
 		if(xr>=0&&xr<m_iWidth&&ipl_manoccr->imageData[ppr]<=m_aiLabel2Disparity[1][label]&&errors_right[label][pp]<255)
 		{
 			int e = errors_right[label][pp];
 			int me = -1000;
-			//Prawy nie zas³oniety
+			//Prawy nie zasï¿½oniety
 			for(int i=1;i<m_aiLabel2Disparity[1][label]/m_iPrecision;i++)
 			{
 				//Pobierz punkt w prawo
@@ -5269,7 +5269,7 @@ double CEstimation::data_term_disparity(int label, int pp)
 					pptt = pp - i - m_aiLabel2Disparity[1][labels[ppt]]/m_iPrecision;
 					if(ppr==pptt)
 					{
-						//jeœli wskazuj?na ten sam punkt 
+						//jeï¿½li wskazuj?na ten sam punkt 
 						//e += 10 - errors_right[labels[ppt]][ppt];
 						me = max(me,errors_right[labels[ppt]][ppt]-10);
 
@@ -5280,7 +5280,7 @@ double CEstimation::data_term_disparity(int label, int pp)
 		}
 		else
 		{
-			//Oba zas³oniete
+			//Oba zasï¿½oniete
 			return 10;
 		}
 
@@ -5293,7 +5293,7 @@ double CEstimation::data_term_disparity(int label, int pp)
 
 double CEstimation::data_term_depth(int label, int pp)
 {
-	//* //Occ Gdy Occ jest zsyntezowan?map?g³ebi
+	//* //Occ Gdy Occ jest zsyntezowan?map?gï¿½ebi
   int target_pixel_ul,target_pixel_vl,target_pixel_ur,target_pixel_vr;
   CvMat* pix[2];
   pix[0] = cvCreateMat(3, 1, CV_64F);
@@ -5315,10 +5315,10 @@ double CEstimation::data_term_depth(int label, int pp)
   cvReleaseMat(&pix[1]);
 	if( target_pixel_ul >= 0 && target_pixel_ul < m_iWidth && target_pixel_vl >= 0 && target_pixel_vl < m_iHeight && disparity_map_left[target_pixel_vl*m_iWidth+target_pixel_ul]<=m_acLabel2Depth[label]&&errors_left[label][pp]<COST_MAX)
 	{
-		//Lewy nie zas³oniety
+		//Lewy nie zasï¿½oniety
 		if(target_pixel_ur >= 0 && target_pixel_ur < m_iWidth && target_pixel_vr >= 0 && target_pixel_vr < m_iHeight && disparity_map_right[target_pixel_vr*m_iWidth+target_pixel_ur]<=m_acLabel2Depth[label]&&errors_right[label][pp]<COST_MAX)
 		{
-			//Lewy i Prawy nie zas³oni?y
+			//Lewy i Prawy nie zasï¿½oni?y
 #ifdef POZNAN_DOUBLE_COST
 #ifdef POZNAN_OCC_POW_MEAN
       return sqrt((pow2(errors_left[label][pp])+pow2(errors_right[label][pp]))/2);
@@ -5331,21 +5331,21 @@ double CEstimation::data_term_depth(int label, int pp)
 		}
 		else
 		{
-			//Tylko Lewy niezas³oniety
+			//Tylko Lewy niezasï¿½oniety
 			return errors_left[label][pp];
 		}
 	}
 	else
 	{
-		//Lewy zas³oni?y
+		//Lewy zasï¿½oni?y
 		if(target_pixel_ur >= 0 && target_pixel_ur < m_iWidth && target_pixel_vr >= 0 && target_pixel_vr < m_iHeight && disparity_map_right[target_pixel_vr*m_iWidth+target_pixel_ur]<=m_acLabel2Depth[label]&&errors_right[label][pp]<COST_MAX)
 		{
-			//Prawy nie zas³oniety
+			//Prawy nie zasï¿½oniety
 			return errors_right[label][pp];
 		}
 		else
 		{
-			//Oba zas³oniete
+			//Oba zasï¿½oniete
 			return 10;
 		}
 
@@ -5920,6 +5920,126 @@ void CEstimation::depth_estimation_by_graph_cut_segmentation_occ(DepthType **pDe
 //Nagoya end
 #endif
 
+#ifdef SEOULTECH_CUDA_SUPPORT
+void CEstimation::depth_estimation_by_graph_cut_cuda(DepthType **pDepth, int iCycle, BYTE ***srcSEGM, CIYuv<ImageType> *yuvCenter) //Changed by SZK
+{
+    int i, j, c, pp, source;
+    int right, down;
+    int cost_cur_temp, cost_right_temp, cost_down_temp;
+
+    memset(labels, 0, m_iPicsize*sizeof(DepthType));
+
+    for(c=0; c<iCycle; c++)
+    {
+        for(source=0; source<m_iNumOfLabels; source+=1)
+        {
+            Graph *g = new Graph();
+            int counter = 0;
+
+            for(pp = 0; pp< m_iPicsize; pp++)
+            {
+                nodes[pp] = g -> add_node();
+
+                if(labels[pp] == source)
+#ifdef POZNAN_TWO_COSTS
+                    g -> set_tweights(nodes[pp], MINSEL(errors_left[source][pp],errors_right[source][pp]), COST_INF);
+#else
+                    g -> set_tweights(nodes[pp], errors[source][pp], COST_INF);
+#endif
+                else
+#ifdef POZNAN_TWO_COSTS
+                    g -> set_tweights(nodes[pp], MINSEL(errors_left[source][pp],errors_right[source][pp]), MINSEL(errors_left[labels[pp]][pp],errors_right[labels[pp]][pp]));
+#else
+                    g -> set_tweights(nodes[pp], errors[source][pp], errors[labels[pp]][pp]);
+#endif
+            }
+
+            for(j = pp = 0; j < m_iHeight; j++)
+            {
+                for(i = 0; i < m_iWidth; i++, pp++)
+                {
+
+                    // set condition
+                    right = pp+1;
+                    down = pp+m_iWidth;
+
+                    cost_cur_temp = m_aiEdgeCost[byte_abs[labels[pp]-source]];
+
+                    // add auxiliary node
+                    if(i != m_iWidth_minus1)
+                    {
+                        if(labels[pp] != labels[right])
+                        {
+                            auxiliary[counter] = g -> add_node();
+                            cost_right_temp = m_aiEdgeCost[byte_abs[labels[right]-source]];
+                            g -> set_tweights(auxiliary[counter], 0, m_aiEdgeCost[byte_abs[labels[pp] - labels[right]]]);
+                            g -> add_edge(nodes[pp], auxiliary[counter], cost_cur_temp, cost_cur_temp);
+                            g -> add_edge(auxiliary[counter], nodes[right], cost_right_temp, cost_right_temp);
+                            counter++;
+                        }
+                        else
+                        {
+                            g -> add_edge(nodes[pp], nodes[right], cost_cur_temp, cost_cur_temp);
+                        }
+                    }
+
+                    if(j != m_iHeight_minus1)
+                    {
+                        if(labels[pp] != labels[down])
+                        {
+                            auxiliary[counter] = g -> add_node();
+                            cost_down_temp = m_aiEdgeCost[byte_abs[labels[down]-source]];
+                            g -> set_tweights(auxiliary[counter], 0, m_aiEdgeCost[byte_abs[labels[pp] - labels[down]]]);
+                            g -> add_edge(nodes[pp], auxiliary[counter], cost_cur_temp, cost_cur_temp);
+                            g -> add_edge(auxiliary[counter], nodes[down], cost_down_temp, cost_down_temp);
+                            counter++;
+                        }
+                        else
+                        {
+                            g -> add_edge(nodes[pp], nodes[down], cost_cur_temp, cost_cur_temp);
+                        }
+                    }
+                }
+            }
+            printf(".");
+            fflush(stdout);
+
+#ifdef GRAPH_CUT_LOG
+            printf("cycle:%d, label=(%d), auxiliary:%d\n", c+1, source, counter);
+#endif
+
+            Graph::flowtype flow = g -> maxflow();
+
+            for(pp = 0; pp < m_iPicsize; pp++)
+            {
+                if (g->what_segment(nodes[pp]) != Graph::SOURCE)
+                {
+                    labels[pp] = (DepthType) source;
+                }
+            }
+
+            delete g;
+        } // source
+
+        printf("Next Cycle\n");
+
+    } // cycle
+
+
+    for(j=pp=0; j<m_iHeight; j++)
+    {
+        for(i=0; i<m_iWidth; i++,pp++)
+        {
+            // GIST start
+//          labels_prev[pp] = labels[pp];  //now in post-processing function
+            // GIST end
+            pDepth[j][i] = m_acLabel2Depth[labels[pp]];
+        }
+    }
+}
+
+#endif
+
 //Nagoya start
 void CEstimation::center_image_segmentation(BYTE ***srcSEGM)
 {
@@ -5938,7 +6058,7 @@ void CEstimation::center_image_segmentation(BYTE ***srcSEGM)
     CvMat *color_mat = cvCreateMat (m_iMaxCluster, 1, CV_32FC3);
     CvMat *count_mat = cvCreateMat (m_iMaxCluster, 1, CV_32SC1);
 
-    // Read Center Image  (OpenCV ¸Þ¸ð¸®·Î º¹»ç)
+    // Read Center Image  (OpenCV ï¿½Þ¸ð¸®·ï¿½ ï¿½ï¿½ï¿½ï¿½)
     for (j=0; j<m_iHeight; j++)
         for (i=0; i<m_iWidth; i++)
         {
@@ -5947,8 +6067,8 @@ void CEstimation::center_image_segmentation(BYTE ***srcSEGM)
             src_img_segm->imageData[(j * m_iWidth + i)*3 + 2] = srcSEGM[2][j][i]; //      R
         }
 
-    dst_img_segm = cvCloneImage (src_img_segm);  // ¿Ö ¹Ì¸® º¹»ç?
-    clusters     = cvCreateMat  (m_iWidth * m_iHeight, 1, CV_32SC1);  // ÇØ´ç Å©·¯½ºÆ® id?
+    dst_img_segm = cvCloneImage (src_img_segm);  // ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½?
+    clusters     = cvCreateMat  (m_iWidth * m_iHeight, 1, CV_32SC1);  // ï¿½Ø´ï¿½ Å©ï¿½ï¿½ï¿½ï¿½Æ® id?
     points       = cvCreateMat  (m_iWidth * m_iHeight, 1, CV_32FC3);  // (R/G/B)
 
     int segm_level;
@@ -5984,7 +6104,7 @@ void CEstimation::center_image_segmentation(BYTE ***srcSEGM)
 
         case 3:
         // Input pixel value into a matrix 
-		// @TODO OpenCV °¡ 1Â÷¿øÀ¸·Î µ¥ÀÌÅÍ ÀÔ·ÂÀ» ¹Þ´Ù º¸´Ï »ý±â´Â ºÒ»ó»ç
+		// @TODO OpenCV ï¿½ï¿½ 1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½Þ´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò»ï¿½ï¿½
         cvSmooth(src_img_segm, src_img_segm, CV_MEDIAN, 3);
         for (j = 0; j < m_iHeight; j++)
         {
@@ -5996,7 +6116,7 @@ void CEstimation::center_image_segmentation(BYTE ***srcSEGM)
             }
         }
 
-        // Clustering (OpenCV »ç¿ë)
+        // Clustering (OpenCV ï¿½ï¿½ï¿½)
         cvKMeans2 (points, m_iMaxCluster, clusters, cvTermCriteria (CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 100, 1.0));
 
         // Compute average for each cluster
@@ -6037,11 +6157,11 @@ void CEstimation::center_image_segmentation(BYTE ***srcSEGM)
             srcSEGM[2][j][i] = dst_img_segm->imageData[(j * m_iWidth + i)*3 + 2];
         }
 
-    cvSaveImage("LowColorImage.bmp", dst_img_segm);  // segmentation °á°ú¸¦ ÀÌ¹ÌÁö·Î ÀúÀå?
+    cvSaveImage("LowColorImage.bmp", dst_img_segm);  // segmentation ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½?
 	printf("The segmentation is done.\n");
 
-	// ¿©±â¼­ ºÎÅÍ´Â Labeling ÇÏ´Â °ÍÀ¸·Î º¸´Ï´Âµ¥. ¿Ö ÀÌ°É Á÷Á¢ ÀÌ·¸°Ô ±¸Çö ÇßÀ»±î?
-	// OpenCV ¿¡¼­ ³»ºÎÀûÀ¸·Î ÀÌ¹Ì ÇßÀ» ²¨ °°Àºµ¥.
+	// ï¿½ï¿½ï¿½â¼­ ï¿½ï¿½ï¿½Í´ï¿½ Labeling ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´Âµï¿½. ï¿½ï¿½ ï¿½Ì°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?
+	// OpenCV ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 	printf("Labeling has started\n");
 
     int num_segm;
@@ -6482,7 +6602,7 @@ void CEstimation::estimation_occ()
   {
     for(x=0; x<m_iWidth; x++,pp++) 
     {
-      ImgDisparity->imageData[y*ImgDisparity->widthStep+x] = m_aiLabel2Disparity[0][labels[pp]]; //Powinien by?drugi taki blok dla drugiego obrazu (mo¿e po porstu odwo³ywa?si?do labels a nie do imgdisp
+      ImgDisparity->imageData[y*ImgDisparity->widthStep+x] = m_aiLabel2Disparity[0][labels[pp]]; //Powinien by?drugi taki blok dla drugiego obrazu (moï¿½e po porstu odwoï¿½ywa?si?do labels a nie do imgdisp
     }
   }
   

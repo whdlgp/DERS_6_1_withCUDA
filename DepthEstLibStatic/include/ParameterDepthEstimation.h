@@ -144,6 +144,9 @@ public:
     UInt                getDirections             ()         { return m_iDirections; }
 #endif
     //Poznan end
+#ifdef SEOULTECH_CUDA_SUPPORT
+    UInt                getCudaCheck             ()         { return m_iCudaCheck; }
+#endif
 
     // GIST start
     UInt                getTemporalEnhancement    ()         { return m_iTemporalEnhancement; }
@@ -237,6 +240,9 @@ protected:
     UInt            m_iDirections;
 #endif
     //Poznan end
+#ifdef SEOULTECH_CUDA_SUPPORT
+    UInt            m_iCudaCheck;
+#endif
 
     // GIST start
     Int             m_iTemporalEnhancement;

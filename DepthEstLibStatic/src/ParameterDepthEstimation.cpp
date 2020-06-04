@@ -185,7 +185,11 @@ CParameterDepthEstimation::setup()
 #endif
 #ifdef POZNAN_TWOVIEW_SUPPORT
     m_pCfgLines[uiParLnCount++] = new ConfigLineUInt("MatchDirection" ,                            & m_iDirections ,                  3 );    
-#endif    
+#endif
+#ifdef SEOULTECH_CUDA_SUPPORT
+    m_pCfgLines[uiParLnCount++] = new ConfigLineUInt("CudaCutsEnable" ,                            & m_iCudaCheck ,                  0 );
+#endif
+
     //Poznan end
     m_pCfgLines[uiParLnCount] = NULL;
 
