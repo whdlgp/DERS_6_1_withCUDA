@@ -76,6 +76,7 @@ public:
 	* vcue            : Smoothness weight of vertical direction        **
 	* *****************************************************************/
 	CudaCuts(int width, int height, int numOfLabels, int* dataTerm_error, int* smoothness_table, int* hcue, int* vcue);
+	CudaCuts(int width, int height, int numOfLabels, int* dataTerm_error, int* smoothness_table);
 	~CudaCuts();
 
 	void run(std::vector<int> labels);

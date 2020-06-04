@@ -3,6 +3,8 @@
 #include "yuv.h"
 #include <time.h>
 #include "PostProcessing.h" //ETRI
+#include "CudaCuts.h"
+#include <vector>
 
 #ifndef SAFE_RELEASE_IMAGE
 #define SAFE_RELEASE_IMAGE(p) { if((p)!=NULL){ cvReleaseImage(&(p)); (p)=NULL; } }
@@ -5921,119 +5923,59 @@ void CEstimation::depth_estimation_by_graph_cut_segmentation_occ(DepthType **pDe
 #endif
 
 #ifdef SEOULTECH_CUDA_SUPPORT
-void CEstimation::depth_estimation_by_graph_cut_cuda(DepthType **pDepth, int iCycle, BYTE ***srcSEGM, CIYuv<ImageType> *yuvCenter) //Changed by SZK
+static void copy_error(CostType **errors, int* errors_cudacuts, int width, int height, int nLabels)
 {
-    int i, j, c, pp, source;
-    int right, down;
-    int cost_cur_temp, cost_right_temp, cost_down_temp;
+    int n = 0, i = 0;
+    for (int c = 0; c < nLabels; c++) {
+		n = c;
+		for (i = 0; i < width * height; i++) {
+            errors_cudacuts[n] = errors[c][i];
+			n += nLabels;
+		}
+	}
+}
 
+static void generate_smoothness_cost(int* smoothCostArray, int nLabels)
+{
+	for(int i = 0; i < nLabels; i++)
+	{
+		for(int j = 0; j < nLabels; j++)
+		{
+			smoothCostArray[i*nLabels + j] = abs(i-j);
+		}
+	}
+}
+
+void CEstimation::depth_estimation_by_graph_cut_cuda(DepthType **pDepth, int iCycle, BYTE ***srcSEGM, CIYuv<ImageType> *yuvCenter)
+{
     memset(labels, 0, m_iPicsize*sizeof(DepthType));
 
-    for(c=0; c<iCycle; c++)
+    // Setup Dataterm error and smoothness function for CudaCuts
+    int* errors_cudacuts = (int*)malloc(sizeof(int)* m_iWidth * m_iHeight * m_iNumOfLabels);
+    int* smooth_cost = (int*)malloc(sizeof(int)*m_iNumOfLabels * m_iNumOfLabels);
+    copy_error(errors, errors_cudacuts, m_iWidth, m_iHeight, m_iNumOfLabels);
+    generate_smoothness_cost(smooth_cost, m_iNumOfLabels);
+    
+    // Setup CudaCuts Memory
+    CudaCuts cuts(m_iWidth, m_iHeight, m_iNumOfLabels, errors_cudacuts, smooth_cost);
+    
+    // Run CudaCuts
+	std::vector<int> label_vec(m_iNumOfLabels);
+	int n=0;
+	generate(label_vec.begin(), label_vec.end(), [&n] { return n++;});
+    cuts.run(label_vec);
+
+    int pp, row, col;
+    for(row=pp=0; row<m_iHeight; row++)
     {
-        for(source=0; source<m_iNumOfLabels; source+=1)
+        for(col=0; col<m_iWidth; col++,pp++)
         {
-            Graph *g = new Graph();
-            int counter = 0;
+            labels[pp] = (DepthType)cuts.pixelLabel[row*cuts.width + col];
 
-            for(pp = 0; pp< m_iPicsize; pp++)
-            {
-                nodes[pp] = g -> add_node();
-
-                if(labels[pp] == source)
-#ifdef POZNAN_TWO_COSTS
-                    g -> set_tweights(nodes[pp], MINSEL(errors_left[source][pp],errors_right[source][pp]), COST_INF);
-#else
-                    g -> set_tweights(nodes[pp], errors[source][pp], COST_INF);
-#endif
-                else
-#ifdef POZNAN_TWO_COSTS
-                    g -> set_tweights(nodes[pp], MINSEL(errors_left[source][pp],errors_right[source][pp]), MINSEL(errors_left[labels[pp]][pp],errors_right[labels[pp]][pp]));
-#else
-                    g -> set_tweights(nodes[pp], errors[source][pp], errors[labels[pp]][pp]);
-#endif
-            }
-
-            for(j = pp = 0; j < m_iHeight; j++)
-            {
-                for(i = 0; i < m_iWidth; i++, pp++)
-                {
-
-                    // set condition
-                    right = pp+1;
-                    down = pp+m_iWidth;
-
-                    cost_cur_temp = m_aiEdgeCost[byte_abs[labels[pp]-source]];
-
-                    // add auxiliary node
-                    if(i != m_iWidth_minus1)
-                    {
-                        if(labels[pp] != labels[right])
-                        {
-                            auxiliary[counter] = g -> add_node();
-                            cost_right_temp = m_aiEdgeCost[byte_abs[labels[right]-source]];
-                            g -> set_tweights(auxiliary[counter], 0, m_aiEdgeCost[byte_abs[labels[pp] - labels[right]]]);
-                            g -> add_edge(nodes[pp], auxiliary[counter], cost_cur_temp, cost_cur_temp);
-                            g -> add_edge(auxiliary[counter], nodes[right], cost_right_temp, cost_right_temp);
-                            counter++;
-                        }
-                        else
-                        {
-                            g -> add_edge(nodes[pp], nodes[right], cost_cur_temp, cost_cur_temp);
-                        }
-                    }
-
-                    if(j != m_iHeight_minus1)
-                    {
-                        if(labels[pp] != labels[down])
-                        {
-                            auxiliary[counter] = g -> add_node();
-                            cost_down_temp = m_aiEdgeCost[byte_abs[labels[down]-source]];
-                            g -> set_tweights(auxiliary[counter], 0, m_aiEdgeCost[byte_abs[labels[pp] - labels[down]]]);
-                            g -> add_edge(nodes[pp], auxiliary[counter], cost_cur_temp, cost_cur_temp);
-                            g -> add_edge(auxiliary[counter], nodes[down], cost_down_temp, cost_down_temp);
-                            counter++;
-                        }
-                        else
-                        {
-                            g -> add_edge(nodes[pp], nodes[down], cost_cur_temp, cost_cur_temp);
-                        }
-                    }
-                }
-            }
-            printf(".");
-            fflush(stdout);
-
-#ifdef GRAPH_CUT_LOG
-            printf("cycle:%d, label=(%d), auxiliary:%d\n", c+1, source, counter);
-#endif
-
-            Graph::flowtype flow = g -> maxflow();
-
-            for(pp = 0; pp < m_iPicsize; pp++)
-            {
-                if (g->what_segment(nodes[pp]) != Graph::SOURCE)
-                {
-                    labels[pp] = (DepthType) source;
-                }
-            }
-
-            delete g;
-        } // source
-
-        printf("Next Cycle\n");
-
-    } // cycle
-
-
-    for(j=pp=0; j<m_iHeight; j++)
-    {
-        for(i=0; i<m_iWidth; i++,pp++)
-        {
             // GIST start
-//          labels_prev[pp] = labels[pp];  //now in post-processing function
+            // labels_prev[pp] = labels[pp];  //now in post-processing function
             // GIST end
-            pDepth[j][i] = m_acLabel2Depth[labels[pp]];
+            pDepth[row][col] = m_acLabel2Depth[labels[pp]];
         }
     }
 }

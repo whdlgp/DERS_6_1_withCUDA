@@ -91,6 +91,51 @@ CudaCuts::CudaCuts(int width, int height, int numOfLabels, int* dataTerm_error, 
 	}
 }
 
+CudaCuts::CudaCuts(int width, int height, int numOfLabels, int* dataTerm_error, int* smoothness_table)
+{
+	int initCheck = cudaCutsInit(width, height, numOfLabels);
+
+	dataTerm = dataTerm_error;
+	smoothTerm = smoothness_table;
+
+	printf("Compute Capability %d\n", initCheck);
+
+	if (initCheck > 0)
+	{
+		printf("The grid is initialized successfully\n");
+	}
+	else
+	if (initCheck == -1)
+	{
+		printf("Error: Please check the device present on the system\n");
+	}
+
+	int dataCheck = cudaCutsSetupDataTerm();
+
+	if (dataCheck == 0)
+	{
+		printf("The dataterm is set properly\n");
+
+	}
+	else
+	if (dataCheck == -1)
+	{
+		printf("Error: Please check the device present on the system\n");
+	}
+
+	int smoothCheck = cudaCutsSetupSmoothTerm();
+
+	if (smoothCheck == 0)
+	{
+		printf("The smoothnessterm is set properly\n");
+	}
+	else
+	if (smoothCheck == -1)
+	{
+		printf("Error: Please check the device present on the system\n");
+	}
+}
+
 CudaCuts::~CudaCuts()
 {
 	cudaCutsFreeMem();
@@ -821,8 +866,11 @@ void CudaCuts::cudaCutsFreeMem()
 	free(h_stochastic);
 	free(h_stochastic_pixel);
 	
-	free(hCue);
-	free(vCue);
+	if (cueValues == 1)
+	{
+		free(hCue);
+		free(vCue);
+	}
 	free(dataTerm);
 	free(smoothTerm);
 
