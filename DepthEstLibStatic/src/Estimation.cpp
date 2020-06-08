@@ -5923,38 +5923,38 @@ void CEstimation::depth_estimation_by_graph_cut_segmentation_occ(DepthType **pDe
 #endif
 
 #ifdef SEOULTECH_CUDA_SUPPORT
-static void copy_error(CostType **errors, int* errors_cudacuts, int width, int height, int nLabels)
+static void copy_error(CostType **errors, int* errors_cudacuts, int width, int height, int nLabels, double coeff)
 {
     int n = 0, i = 0;
     for (int c = 0; c < nLabels; c++) {
 		n = c;
 		for (i = 0; i < width * height; i++) {
-            errors_cudacuts[n] = errors[c][i];
+            errors_cudacuts[n] = coeff*errors[c][i];
 			n += nLabels;
 		}
 	}
 }
 
-static void generate_smoothness_cost(int* smoothCostArray, int nLabels)
+static void generate_smoothness_cost(int* smoothCostArray, int nLabels, double coeff)
 {
 	for(int i = 0; i < nLabels; i++)
 	{
 		for(int j = 0; j < nLabels; j++)
 		{
-			smoothCostArray[i*nLabels + j] = abs(i-j);
+			smoothCostArray[i*nLabels + j] = coeff*abs(i-j);
 		}
 	}
 }
 
-void CEstimation::depth_estimation_by_graph_cut_cuda(DepthType **pDepth, int iCycle, BYTE ***srcSEGM, CIYuv<ImageType> *yuvCenter)
+void CEstimation::depth_estimation_by_graph_cut_cuda(DepthType **pDepth, int iCycle, BYTE ***srcSEGM, CIYuv<ImageType> *yuvCenter, double datacoeff, double smoothcoeff)
 {
     memset(labels, 0, m_iPicsize*sizeof(DepthType));
 
     // Setup Dataterm error and smoothness function for CudaCuts
     int* errors_cudacuts = (int*)malloc(sizeof(int)* m_iWidth * m_iHeight * m_iNumOfLabels);
     int* smooth_cost = (int*)malloc(sizeof(int)*m_iNumOfLabels * m_iNumOfLabels);
-    copy_error(errors, errors_cudacuts, m_iWidth, m_iHeight, m_iNumOfLabels);
-    generate_smoothness_cost(smooth_cost, m_iNumOfLabels);
+    copy_error(errors, errors_cudacuts, m_iWidth, m_iHeight, m_iNumOfLabels, datacoeff);
+    generate_smoothness_cost(smooth_cost, m_iNumOfLabels, smoothcoeff);
     
     // Setup CudaCuts Memory
     CudaCuts cuts(m_iWidth, m_iHeight, m_iNumOfLabels, errors_cudacuts, smooth_cost);

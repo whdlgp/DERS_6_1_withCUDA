@@ -61,7 +61,7 @@ public:
     void                depth_estimation_by_graph_cut_segmentation  (DepthType **pDepth, int iCycle, BYTE ***srcSEGM, CIYuv<ImageType> *yuvCenter);
     void                depth_estimation_by_graph_cut_semi          (DepthType **pDepth, int iCycle, CIYuv<ImageType> *yuvCenter);
 #ifdef SEOULTECH_CUDA_SUPPORT
-    void                depth_estimation_by_graph_cut_cuda          (DepthType **pDepth, int iCycle, BYTE ***srcSEGM, CIYuv<ImageType> *yuvCenter);
+    void                depth_estimation_by_graph_cut_cuda          (DepthType **pDepth, int iCycle, BYTE ***srcSEGM, CIYuv<ImageType> *yuvCenter, double datacoeff, double smoothcoeff);
 #endif
     void                center_image_segmentation   (BYTE ***srcSEGM);
 

@@ -547,7 +547,7 @@ int main(int argc, char *argv[])
             cEstimation.depth_estimation_by_graph_cut_semi(yuvDepth.Y, iCYCLE, &yuvCenter);
         } else if(cParameter.getCudaCheck() == 1){
             printf("Graph Cut with CUDA: %d\n", cEstimation.getImageSegmentation());
-            cEstimation.depth_estimation_by_graph_cut_cuda(yuvDepth.Y, iCYCLE, yuvCenterSegment.getData(), &yuvCenter);
+            cEstimation.depth_estimation_by_graph_cut_cuda(yuvDepth.Y, iCYCLE, yuvCenterSegment.getData(), &yuvCenter, cParameter.getCudaDataCoeff(), cParameter.getCudaSmoothCoeff());
         } else if(cEstimation.getImageSegmentation()==1) {
 #ifdef POZNAN_OCC
           if(cParameter.getOcc()==1) {

@@ -188,6 +188,11 @@ public:
 
 	int cudaCutsGetResult();
 
+	/****************************************************************
+	* Save debug label image                                       **
+	* *************************************************************/
+	void writeDebugLabel(const char* filename);
+
 	/************************************************************
 	* De-allocates all the memory allocated on the host and   **
 	* the device.                                             **

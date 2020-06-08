@@ -150,6 +150,10 @@ void CudaCuts::run(std::vector<int> labels)
 		cudaCutsSetupAlpha(labels[i]);
 		cudaCutsSetupGraph();
 		cudaCutsStochasticOptimize();
+		
+		//cudaCutsGetResult();
+		//const char* filename = "debug_label";
+		//writeDebugLabel(filename);
 	}
 	cudaCutsGetResult();
 }
@@ -853,6 +857,47 @@ int CudaCuts::cudaCutsGetResult()
 
 	return 0;
 
+}
+
+void CudaCuts::writeDebugLabel(const char* filename)
+{
+	int** out_pixel_values = (int**)malloc(sizeof(int*)*height);
+
+	for (int i = 0; i < height; i++)
+	{
+		out_pixel_values[i] = (int*)malloc(sizeof(int)* width);
+		for (int j = 0; j < width; j++) {
+			out_pixel_values[i][j] = 0;
+		}
+	}
+	for (int i = 0; i < graph_size1; i++)
+	{
+		int row = i / width1, col = i % width1;
+
+		if (row >= 0 && col >= 0 && row <= height - 1 && col <= width - 1 && (pixelLabel[row*width + col] == alpha_label))
+			out_pixel_values[row][col] = 255;
+	}
+	char savename[20];
+	sprintf(savename, "%s%d.pgm", filename, alpha_label);
+	FILE* fp = fopen(savename, "w");
+
+	fprintf(fp, "%c", 'P');
+	fprintf(fp, "%c", '2');
+	fprintf(fp, "%c", '\n');
+	fprintf(fp, "%d %c %d %c ", width, ' ', height, '\n');
+	fprintf(fp, "%d %c", 255, '\n');
+
+	for (int i = 0; i<height; i++)
+	{
+		for (int j = 0; j<width; j++)
+		{
+			fprintf(fp, "%d\n", out_pixel_values[i][j]);
+		}
+	}
+	fclose(fp);
+	for (int i = 0; i < height; i++)
+		free(out_pixel_values[i]);
+	free(out_pixel_values);
 }
 
 void CudaCuts::cudaCutsFreeMem()
