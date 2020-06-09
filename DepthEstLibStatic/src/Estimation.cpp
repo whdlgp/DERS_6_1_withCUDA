@@ -5946,7 +5946,7 @@ static void generate_smoothness_cost(int* smoothCostArray, int nLabels, double c
 	}
 }
 
-void CEstimation::depth_estimation_by_graph_cut_cuda(DepthType **pDepth, int iCycle, BYTE ***srcSEGM, CIYuv<ImageType> *yuvCenter, double datacoeff, double smoothcoeff)
+void CEstimation::depth_estimation_by_graph_cut_cuda(DepthType **pDepth, int iCycle, BYTE ***srcSEGM, CIYuv<ImageType> *yuvCenter, double datacoeff, double smoothcoeff, int is_stochatic)
 {
     memset(labels, 0, m_iPicsize*sizeof(DepthType));
 
@@ -5963,7 +5963,7 @@ void CEstimation::depth_estimation_by_graph_cut_cuda(DepthType **pDepth, int iCy
 	std::vector<int> label_vec(m_iNumOfLabels);
 	int n=0;
 	generate(label_vec.begin(), label_vec.end(), [&n] { return n++;});
-    cuts.run(label_vec);
+    cuts.run(label_vec, is_stochatic);
 
     int pp, row, col;
     for(row=pp=0; row<m_iHeight; row++)

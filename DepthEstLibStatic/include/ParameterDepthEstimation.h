@@ -148,6 +148,7 @@ public:
     UInt                getCudaCheck             ()         { return m_iCudaCheck; }
     Double              getCudaDataCoeff         ()         { return m_dCudaDataCoeff; }
     Double              getCudaSmoothCoeff       ()         { return m_dCudaSmoothCoeff; }
+    UInt                getCudaStochatic         ()         { return m_iCudaStochatic; }
 
     UInt                getGraphcutNoAuxCheck    ()         { return m_iGraphcutNoAux; }
 #endif
@@ -248,6 +249,7 @@ protected:
     UInt            m_iCudaCheck;
     Double          m_dCudaDataCoeff;
     Double          m_dCudaSmoothCoeff;
+    UInt            m_iCudaStochatic;
 
     UInt            m_iGraphcutNoAux;
 #endif

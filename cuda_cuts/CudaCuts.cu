@@ -141,20 +141,29 @@ CudaCuts::~CudaCuts()
 	cudaCutsFreeMem();
 }
 
-void CudaCuts::run(std::vector<int> labels)
+void CudaCuts::run(std::vector<int> labels, int is_stochastic)
 {
-	for(int i = 0; i < num_Labels; i++)
-	//for(int i = num_Labels-1; i >= 0 ; i--)
+	if(is_stochastic)
 	{
-		cudaCutsResetMem();
-		cudaCutsSetupAlpha(labels[i]);
-		cudaCutsSetupGraph();
-		cudaCutsStochasticOptimize();
-		
-		//cudaCutsGetResult();
-		//const char* filename = "debug_label";
-		//writeDebugLabel(filename);
+		for(int i = 0; i < num_Labels; i++)
+		{
+			cudaCutsResetMem();
+			cudaCutsSetupAlpha(labels[i]);
+			cudaCutsSetupGraph();
+			cudaCutsStochasticOptimize();
+		}
 	}
+	else
+	{
+		for(int i = 0; i < num_Labels; i++)
+		{
+			cudaCutsResetMem();
+			cudaCutsSetupAlpha(labels[i]);
+			cudaCutsSetupGraph();
+			cudaCutsAtomicOptimize();
+		}
+	}
+
 	cudaCutsGetResult();
 }
 
@@ -576,11 +585,12 @@ void CudaCuts::cudaCutsAtomic()
 
 	int h_terminate_condition = 0;
 	CUDA_SAFE_CALL(cudaThreadSynchronize());
+	/*
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
 	cudaEventCreate(&stop);
 	cudaEventRecord(start, 0);
-
+	*/
 	do
 	{
 
@@ -642,13 +652,13 @@ void CudaCuts::cudaCutsAtomic()
 		}
 		counter++;
 	} while (h_terminate_condition != 2);
-
+	/*
 	CUDA_SAFE_CALL(cudaEventRecord(stop, 0));
 	CUDA_SAFE_CALL(cudaEventSynchronize(stop));
 	float time;
 	CUDA_SAFE_CALL(cudaEventElapsedTime(&time, start, stop));
 	printf("TT Cuts :: %f ms\n", time);
-
+	*/
 }
 
 

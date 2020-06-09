@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
 	std::vector<int> labels(input_file.numOfLabels);
 	int n=0;
 	generate(labels.begin(), labels.end(), [&n] { return n++;});
-	cuts.run(labels);
+	cuts.run(labels, 0);
 	
 	//save output file
 	const char* output_name = "result_sponge/flower_cuda_test.pgm";

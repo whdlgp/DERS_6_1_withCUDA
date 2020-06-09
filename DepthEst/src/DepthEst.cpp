@@ -549,7 +549,7 @@ int main(int argc, char *argv[])
 #ifdef SEOULTECH_CUDA_SUPPORT 
         else if(cParameter.getCudaCheck() == 1){
             printf("Graph Cut with CUDA: %d\n", cEstimation.getImageSegmentation());
-            cEstimation.depth_estimation_by_graph_cut_cuda(yuvDepth.Y, iCYCLE, yuvCenterSegment.getData(), &yuvCenter, cParameter.getCudaDataCoeff(), cParameter.getCudaSmoothCoeff());
+            cEstimation.depth_estimation_by_graph_cut_cuda(yuvDepth.Y, iCYCLE, yuvCenterSegment.getData(), &yuvCenter, cParameter.getCudaDataCoeff(), cParameter.getCudaSmoothCoeff(), cParameter.getCudaStochatic());
         } else if(cParameter.getGraphcutNoAuxCheck() == 1){
             printf("Graph Cut without Auxility node: %d\n", cEstimation.getImageSegmentation());
             cEstimation.depth_estimation_by_graph_cut_no_auxnode(yuvDepth.Y, iCYCLE, yuvCenterSegment.getData(), &yuvCenter);

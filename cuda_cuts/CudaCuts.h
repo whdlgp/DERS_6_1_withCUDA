@@ -79,7 +79,7 @@ public:
 	CudaCuts(int width, int height, int numOfLabels, int* dataTerm_error, int* smoothness_table);
 	~CudaCuts();
 
-	void run(std::vector<int> labels);
+	void run(std::vector<int> labels, int is_stochastic);
 
 	/********************************************************************
 	* cudaCutsInit(width, height, numOfLabels) function sets the      **
