@@ -5980,6 +5980,104 @@ void CEstimation::depth_estimation_by_graph_cut_cuda(DepthType **pDepth, int iCy
     }
 }
 
+void CEstimation::depth_estimation_by_graph_cut_no_auxnode(DepthType **pDepth, int iCycle, BYTE ***srcSEGM, CIYuv<ImageType> *yuvCenter) //Changed by SZK
+{
+    int i, j, c, pp, source;
+    int right, down;
+    int cost_cur_temp, cost_right_temp1, cost_right_temp2, cost_down_temp1, cost_down_temp2;
+
+    memset(labels, 0, m_iPicsize*sizeof(DepthType));
+
+    for(c=0; c<iCycle; c++)
+    {
+        for(source=0; source<m_iNumOfLabels; source+=1)
+        {
+            Graph *g = new Graph();
+
+            for(pp = 0; pp< m_iPicsize; pp++)
+            {
+                nodes[pp] = g -> add_node();
+                g -> set_tweights(nodes[pp], errors[source][pp], errors[labels[pp]][pp]);
+            }
+
+            for(j = pp = 0; j < m_iHeight; j++)
+            {
+                for(i = 0; i < m_iWidth; i++, pp++)
+                {
+
+                    // set condition
+                    right = pp+1;
+                    down = pp+m_iWidth;
+
+                    cost_cur_temp = m_aiEdgeCost[byte_abs[labels[pp]-source]];
+
+                    // no auxiliary node
+                    if(i != m_iWidth_minus1)
+                    {
+                        if(labels[pp] != labels[right])
+                        {
+                            cost_right_temp1 = m_aiEdgeCost[byte_abs[labels[right]-source]];
+                            cost_right_temp2 = m_aiEdgeCost[byte_abs[labels[pp]-source]];
+                            g -> add_edge(nodes[pp], nodes[right], cost_right_temp1, cost_right_temp2);
+                        }
+                        else
+                        {
+                            g -> add_edge(nodes[pp], nodes[right], cost_cur_temp, cost_cur_temp);
+                        }
+                    }
+
+                    if(j != m_iHeight_minus1)
+                    {
+                        if(labels[pp] != labels[down])
+                        {
+                            cost_down_temp1 = m_aiEdgeCost[byte_abs[labels[down]-source]];
+                            cost_down_temp2 = m_aiEdgeCost[byte_abs[labels[pp]-source]];
+                            g -> add_edge(nodes[pp], nodes[right], cost_down_temp1, cost_down_temp2);
+                        }
+                        else
+                        {
+                            g -> add_edge(nodes[pp], nodes[down], cost_cur_temp, cost_cur_temp);
+                        }
+                    }
+                }
+            }
+            printf(".");
+            fflush(stdout);
+
+#ifdef GRAPH_CUT_LOG
+            printf("cycle:%d, label=(%d), auxiliary:%d\n", c+1, source, counter);
+#endif
+
+            Graph::flowtype flow = g -> maxflow();
+
+            for(pp = 0; pp < m_iPicsize; pp++)
+            {
+                if (g->what_segment(nodes[pp]) != Graph::SOURCE)
+                {
+                    labels[pp] = (DepthType) source;
+                }
+            }
+
+            delete g;
+        } // source
+
+        printf("Next Cycle\n");
+
+    } // cycle
+
+
+    for(j=pp=0; j<m_iHeight; j++)
+    {
+        for(i=0; i<m_iWidth; i++,pp++)
+        {
+            // GIST start
+//          labels_prev[pp] = labels[pp];  //now in post-processing function
+            // GIST end
+            pDepth[j][i] = m_acLabel2Depth[labels[pp]];
+        }
+    }
+}
+
 #endif
 
 //Nagoya start

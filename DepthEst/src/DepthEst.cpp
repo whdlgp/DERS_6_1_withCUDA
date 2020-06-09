@@ -545,10 +545,17 @@ int main(int argc, char *argv[])
         //printf("Graph Cuts\n");
         if(cParameter.getDEmode() != 0) {
             cEstimation.depth_estimation_by_graph_cut_semi(yuvDepth.Y, iCYCLE, &yuvCenter);
-        } else if(cParameter.getCudaCheck() == 1){
+        }
+#ifdef SEOULTECH_CUDA_SUPPORT 
+        else if(cParameter.getCudaCheck() == 1){
             printf("Graph Cut with CUDA: %d\n", cEstimation.getImageSegmentation());
             cEstimation.depth_estimation_by_graph_cut_cuda(yuvDepth.Y, iCYCLE, yuvCenterSegment.getData(), &yuvCenter, cParameter.getCudaDataCoeff(), cParameter.getCudaSmoothCoeff());
-        } else if(cEstimation.getImageSegmentation()==1) {
+        } else if(cParameter.getGraphcutNoAuxCheck() == 1){
+            printf("Graph Cut without Auxility node: %d\n", cEstimation.getImageSegmentation());
+            cEstimation.depth_estimation_by_graph_cut_no_auxnode(yuvDepth.Y, iCYCLE, yuvCenterSegment.getData(), &yuvCenter);
+        }
+#endif
+        else if(cEstimation.getImageSegmentation()==1) {
 #ifdef POZNAN_OCC
           if(cParameter.getOcc()==1) {
             printf("Graph Cuts Seg Occ\n");

@@ -190,6 +190,7 @@ CParameterDepthEstimation::setup()
     m_pCfgLines[uiParLnCount++] = new ConfigLineUInt("CudaCutsEnable" ,                            & m_iCudaCheck ,                  0 );
     m_pCfgLines[uiParLnCount++] = new ConfigLineDbl("CudaDataCoefficient" ,                        & m_dCudaDataCoeff ,              1.0 );
     m_pCfgLines[uiParLnCount++] = new ConfigLineDbl("CudaSmoothCoefficient" ,                      & m_dCudaSmoothCoeff ,            1.0 );
+    m_pCfgLines[uiParLnCount++] = new ConfigLineUInt("GraphcutNoAuxilityNode" ,                    & m_iGraphcutNoAux ,              0 );
 #endif
 
     //Poznan end

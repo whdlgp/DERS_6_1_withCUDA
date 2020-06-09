@@ -148,6 +148,8 @@ public:
     UInt                getCudaCheck             ()         { return m_iCudaCheck; }
     Double              getCudaDataCoeff         ()         { return m_dCudaDataCoeff; }
     Double              getCudaSmoothCoeff       ()         { return m_dCudaSmoothCoeff; }
+
+    UInt                getGraphcutNoAuxCheck    ()         { return m_iGraphcutNoAux; }
 #endif
 
     // GIST start
@@ -244,8 +246,10 @@ protected:
     //Poznan end
 #ifdef SEOULTECH_CUDA_SUPPORT
     UInt            m_iCudaCheck;
-    Double            m_dCudaDataCoeff;
-    Double            m_dCudaSmoothCoeff;
+    Double          m_dCudaDataCoeff;
+    Double          m_dCudaSmoothCoeff;
+
+    UInt            m_iGraphcutNoAux;
 #endif
 
     // GIST start
