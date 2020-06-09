@@ -726,10 +726,12 @@ void CudaCuts::cudaCutsStochastic()
 		graph_size1, width1, height1, d_relabel, d_stochastic, d_counter, d_finish);
 	int h_terminate_condition = 0;
 	CUDA_SAFE_CALL(cudaThreadSynchronize());
+	/* Execution time check
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
 	cudaEventCreate(&stop);
 	cudaEventRecord(start, 0);
+	*/
 
 	//for (int i = 0 ; i < 400; i++ )
 	do
@@ -798,13 +800,13 @@ void CudaCuts::cudaCutsStochastic()
 		counter++;
 	} while (h_terminate_condition == 0 && counter < 500);
 
-
+	/* Execution time check
 	CUDA_SAFE_CALL(cudaEventRecord(stop, 0));
 	CUDA_SAFE_CALL(cudaEventSynchronize(stop));
 	float time;
 	CUDA_SAFE_CALL(cudaEventElapsedTime(&time, start, stop));
 	printf("TT Cuts :: %f ms\n", time);
-
+	*/
 }
 
 void CudaCuts::bfsLabeling()
