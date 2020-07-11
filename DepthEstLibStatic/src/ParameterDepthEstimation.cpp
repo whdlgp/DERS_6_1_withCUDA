@@ -193,6 +193,7 @@ CParameterDepthEstimation::setup()
     m_pCfgLines[uiParLnCount++] = new ConfigLineUInt("CudaCutsStochatic" ,                         & m_iCudaStochatic ,              0 );
     
     m_pCfgLines[uiParLnCount++] = new ConfigLineUInt("GraphcutNoAuxilityNode" ,                    & m_iGraphcutNoAux ,              0 );
+    m_pCfgLines[uiParLnCount++] = new ConfigLineUInt("GraphcutPushRelabel" ,                       & m_iGraphcutPushRelabel ,        0 );
 #endif
 
     //Poznan end

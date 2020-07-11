@@ -4,6 +4,7 @@
 #include <time.h>
 #include "PostProcessing.h" //ETRI
 #include "CudaCuts.h"
+#include "push_relabel_graphcut.hpp"
 #include <vector>
 
 #ifndef SAFE_RELEASE_IMAGE
@@ -6061,6 +6062,145 @@ void CEstimation::depth_estimation_by_graph_cut_no_auxnode(DepthType **pDepth, i
             delete g;
         } // source
 
+        printf("Next Cycle\n");
+
+    } // cycle
+
+
+    for(j=pp=0; j<m_iHeight; j++)
+    {
+        for(i=0; i<m_iWidth; i++,pp++)
+        {
+            // GIST start
+//          labels_prev[pp] = labels[pp];  //now in post-processing function
+            // GIST end
+            pDepth[j][i] = m_acLabel2Depth[labels[pp]];
+        }
+    }
+}
+
+static void push_relabel_tweight(PushRelabel::Graph &g, int node, int source, int sink, int source_cap, int sink_cap)
+{
+    int tr_cap = abs(source_cap - sink_cap);
+    if(source_cap < sink)
+    {
+        g.addEdge(node, sink, tr_cap);
+    }
+    else    
+    {
+        g.addEdge(source, node, tr_cap);
+    }
+}
+
+void CEstimation::depth_estimation_by_graph_cut_push_relabel(DepthType **pDepth, int iCycle, BYTE ***srcSEGM, CIYuv<ImageType> *yuvCenter)
+{
+    int i, j, c, pp, source;
+    int right, down;
+    int cost_cur_temp, cost_right_temp, cost_down_temp;
+
+    int* nodes = (int*)malloc(m_iPicsize*sizeof(int));
+    int* auxiliary = (int*)malloc((m_iPicsize<<1)*sizeof(int));
+
+    memset(labels, 0, m_iPicsize*sizeof(DepthType));
+
+    for(c=0; c<iCycle; c++)
+    {
+        for(source=0; source<m_iNumOfLabels; source+=1)
+        {
+            PushRelabel::Graph g;
+            int source_node = g.addNode();
+            int sink_node = g.addNode();
+
+            int counter = 0;
+
+            for(pp = 0; pp< m_iPicsize; pp++)
+            {
+                nodes[pp] = g.addNode();
+
+                if(labels[pp] == source)
+                    push_relabel_tweight(g, nodes[pp], source_node, sink_node, errors[source][pp], COST_INF);
+                else
+                    push_relabel_tweight(g, nodes[pp], source_node, sink_node, errors[source][pp], errors[labels[pp]][pp]);
+            }
+
+            for(j = pp = 0; j < m_iHeight; j++)
+            {
+                for(i = 0; i < m_iWidth; i++, pp++)
+                {
+
+                    // set condition
+                    right = pp+1;
+                    down = pp+m_iWidth;
+
+                    cost_cur_temp = m_aiEdgeCost[byte_abs[labels[pp]-source]];
+
+                    // add auxiliary node
+                    if(i != m_iWidth_minus1)
+                    {
+                        if(labels[pp] != labels[right])
+                        {
+                            auxiliary[counter] = g.addNode();
+                            cost_right_temp = m_aiEdgeCost[byte_abs[labels[right]-source]];
+                            push_relabel_tweight(g, auxiliary[counter], source_node, sink_node, 0, m_aiEdgeCost[byte_abs[labels[pp] - labels[right]]]);
+
+                            g.addEdge(nodes[pp], auxiliary[counter], cost_cur_temp);
+                            g.addEdge(auxiliary[counter], nodes[pp], cost_cur_temp);
+                            g.addEdge(nodes[right], auxiliary[counter], cost_right_temp);
+                            g.addEdge(auxiliary[counter], nodes[right], cost_right_temp);
+                            counter++;
+                        }
+                        else
+                        {
+                            g.addEdge(nodes[pp], nodes[right], cost_cur_temp);
+                            g.addEdge(nodes[right], nodes[pp], cost_cur_temp);
+                        }
+                    }
+
+                    if(j != m_iHeight_minus1)
+                    {
+                        if(labels[pp] != labels[down])
+                        {
+                            auxiliary[counter] = g.addNode();
+                            cost_down_temp = m_aiEdgeCost[byte_abs[labels[down]-source]];
+                            push_relabel_tweight(g, auxiliary[counter], source_node, sink_node, 0, m_aiEdgeCost[byte_abs[labels[pp] - labels[down]]]);
+
+                            g.addEdge(nodes[pp], auxiliary[counter], cost_cur_temp);
+                            g.addEdge(auxiliary[counter], nodes[pp], cost_cur_temp);
+                            g.addEdge(nodes[down], auxiliary[counter], cost_down_temp);
+                            g.addEdge(auxiliary[counter], nodes[down], cost_down_temp);
+                            counter++;
+                        }
+                        else
+                        {
+                            g.addEdge(nodes[pp], nodes[down], cost_cur_temp);
+                            g.addEdge(nodes[down], nodes[pp], cost_cur_temp);
+                        }
+                    }
+                }
+            }
+
+            cout << "graph construction done" << endl;
+            cout << "Maximum flow is " << g.getMaxFlow(source_node, sink_node) << std::endl;
+            // mincut 
+            g.getMinCut(source_node);
+
+            printf(".");
+            fflush(stdout);
+
+#ifdef GRAPH_CUT_LOG
+            printf("cycle:%d, label=(%d), auxiliary:%d\n", c+1, source, counter);
+#endif
+
+            printf("max flow done");
+
+            for(pp = 0; pp < m_iPicsize; pp++)
+            {
+                if(g.isVisited(nodes[pp]) != 1)
+                {
+                    labels[pp] = (DepthType) source;
+                }
+            }
+        } // source
         printf("Next Cycle\n");
 
     } // cycle

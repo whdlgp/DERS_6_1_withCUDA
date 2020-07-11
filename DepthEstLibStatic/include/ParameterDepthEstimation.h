@@ -151,6 +151,7 @@ public:
     UInt                getCudaStochatic         ()         { return m_iCudaStochatic; }
 
     UInt                getGraphcutNoAuxCheck    ()         { return m_iGraphcutNoAux; }
+    UInt                getGraphcutPushRelabel   ()         { return m_iGraphcutPushRelabel; }
 #endif
 
     // GIST start
@@ -252,6 +253,7 @@ protected:
     UInt            m_iCudaStochatic;
 
     UInt            m_iGraphcutNoAux;
+    UInt            m_iGraphcutPushRelabel;
 #endif
 
     // GIST start

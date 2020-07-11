@@ -553,7 +553,10 @@ int main(int argc, char *argv[])
         } else if(cParameter.getGraphcutNoAuxCheck() == 1){
             printf("Graph Cut without Auxility node: %d\n", cEstimation.getImageSegmentation());
             cEstimation.depth_estimation_by_graph_cut_no_auxnode(yuvDepth.Y, iCYCLE, yuvCenterSegment.getData(), &yuvCenter);
-        }
+        } else if(cParameter.getGraphcutPushRelabel() == 1){
+            printf("Graph Cut with Push-Relabel method: %d\n", cEstimation.getImageSegmentation());
+            cEstimation.depth_estimation_by_graph_cut_push_relabel(yuvDepth.Y, iCYCLE, yuvCenterSegment.getData(), &yuvCenter);
+        } 
 #endif
         else if(cEstimation.getImageSegmentation()==1) {
 #ifdef POZNAN_OCC
